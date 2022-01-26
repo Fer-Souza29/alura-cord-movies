@@ -29,7 +29,7 @@ function Titulo(props) {
 export default function PaginaInicial() {
 
     const [username, setUsername] = React.useState('Fer-Souza29'); // hook para alterar estado da pagina
-    const roteamento = useRouter(); // hooks de push para mudar de pagina
+    const roteamento = useRouter(); // hooks de push para mudar de URL
 
     // desafio não mostrar imagem com usr com menos de 2 caracteres
     let userimg = `https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png`
