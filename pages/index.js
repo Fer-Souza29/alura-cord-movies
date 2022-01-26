@@ -1,34 +1,9 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import React from 'react';
+import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-        }
-        body {
-          font-family: 'Open Sans', sans-serif;
-        }
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-        #__next {
-          flex: 1;
-        }
-        #__next > * {
-          flex: 1;
-        }
-        /* ./App fit Height */ 
-      `}</style>
-    );
-}
+
 
 function Titulo(props) {
     console.log(props);
@@ -51,32 +26,36 @@ function Titulo(props) {
 }
 
 
-// componente REACT
+export default function PaginaInicial() {
 
-/*
-function HomePage() {
-    return (
-        <div>
-            <GlobalStyle/>
-            <Titulo tag="h2">Esse essa tag tem o valor de props, é Children</Titulo>
-            <h2>Discord - Alura Matrix</h2>
-        </div>
-    )
-}
+    const [username, setUsername] = React.useState('Fer-Souza29'); // hook para alterar estado da pagina
+    const roteamento = useRouter(); // hooks de push para mudar de pagina
 
-export default HomePage
+    // desafio não mostrar imagem com usr com menos de 2 caracteres
+    let userimg = `https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png`
+    // if de gambiarra, mas, desafio concluido
+    if (username.length >= 3) {
+        userimg = `https://github.com/${username}.png`
+    }
+
+    /* codigo de desafio api não finalizado
+    var url = 'https://api.github.com/users/Fer-Souza29'
+
+    fetch(url)
+        .then(resposta => resposta.json()).then((respostaConvertida) => {
+            let dados = respostaConvertida
+
+        })
 */
 
-export default function PaginaInicial() {
-    const username = 'Fer-Souza29';
 
     return (
         <>
-            <GlobalStyle />
+
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    
+
                     backgroundImage: 'url(https://media0.giphy.com/media/95OIHJppkEK6Q/giphy.gif?cid=790b76111ee1766b37253fee3d3b4d4f19e657bef357b3ef&rid=giphy.gif&ct=g)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
@@ -94,13 +73,17 @@ export default function PaginaInicial() {
                         borderRadius: '5px', padding: '32px', margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                         backgroundColor: 'RGBA(0,0,0,0.55)',
-                        
-                        
+
+
                     }}
                 >
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function (infodoEvento) {
+                            infodoEvento.preventDefault();
+                            roteamento.push('/chat');
+                        }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -111,8 +94,18 @@ export default function PaginaInicial() {
                             {appConfig.name}
                         </Text>
 
-                        <TextField
+                        < TextField
                             fullWidth
+                            value={username}
+
+                            onChange={function (event) {
+
+                                console.log('usuario digitou', event.target.value);
+                                // onde tá o valor?
+                                const valor = event.target.value;
+                                // trocar o valor da variável
+                                setUsername(valor);
+                            }}
                             textFieldColors={{
                                 neutral: {
                                     textColor: appConfig.theme.colors.neutrals[200],
@@ -122,10 +115,12 @@ export default function PaginaInicial() {
                                 },
                             }}
                         />
+
                         <Button
                             type='submit'
                             label='Entrar'
                             fullWidth
+
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
                                 mainColor: appConfig.theme.colors.primary[500],
@@ -160,7 +155,8 @@ export default function PaginaInicial() {
                                 borderRadius: '50%',
                                 marginBottom: '16px',
                             }}
-                            src={`https://github.com/${username}.png`}
+
+                            src={userimg}
                         />
                         <Text
                             variant="body4"
