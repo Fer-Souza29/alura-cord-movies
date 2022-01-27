@@ -1,26 +1,62 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+
+/*
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4OTY1OSwiZXhwIjoxOTU4ODY1NjU5fQ.gjP6P2ItI-16VrUFnlgusTq6xAlvocHsK5XqPYxZ1jI';
+const SUPABASE_URL = 'https://hwdpywjghkgwgunwnhfh.supabase.co';
+*/
+
+const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+
+
+
 
 export default function ChatPage() {
     // Sua lógica vai aqui
 
+
+
     const [mensagem, setMensagem] = React.useState('');
     const [listadeMensagens, setListaDemensagens] = React.useState([]);
+
+
+
+    React.useEffect(() => {
+        supabaseClient.from('mensagens')
+            .select('*')
+            .order('id', { ascending: false })
+            .then(({ data }) => {
+                console.log('dados da consulta', data);
+                setListaDemensagens(data);
+            })
+    }, []);
 
     // ./Sua lógica vai aqui
 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
-            id: listadeMensagens.length + 1,
-            de: 'souzafer',
+
+            //  id: listadeMensagens.length + 1,
+            de: 'Fer-Souza29',
             texto: novaMensagem,
         }
-        setListaDemensagens([
-            mensagem,
-            ...listadeMensagens,
-
-        ]);
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                // tem que ser um obj com os mesmos campos
+                mensagem
+            ])
+            .then(({ data }) => {
+                setListaDemensagens([
+                    data[0],
+                    ...listadeMensagens,
+                ]);
+            });
         setMensagem('');
     }
 
@@ -168,7 +204,7 @@ function MessageList(props) {
         <Box
             tag="ul"
             styleSheet={{
-
+                overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -203,7 +239,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}
@@ -249,4 +285,5 @@ function MessageList(props) {
         </Box>
     )
 }
+
 
