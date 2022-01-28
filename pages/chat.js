@@ -2,25 +2,27 @@ import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/router';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 
-
-/*
-
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4OTY1OSwiZXhwIjoxOTU4ODY1NjU5fQ.gjP6P2ItI-16VrUFnlgusTq6xAlvocHsK5XqPYxZ1jI';
-const SUPABASE_URL = 'https://hwdpywjghkgwgunwnhfh.supabase.co';
-*/
 
 const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 
-
+function escutaMsgTempoReal(adicionaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        .on('INSERT', (respostaLive) => {
+            adicionaMensagem(respostaLive.new)
+        }).subscribe();
+}
 
 
 export default function ChatPage() {
     // Sua lógica vai aqui
 
-
-
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username;
     const [mensagem, setMensagem] = React.useState('');
     const [listadeMensagens, setListaDemensagens] = React.useState([]);
 
@@ -33,7 +35,17 @@ export default function ChatPage() {
             .then(({ data }) => {
                 console.log('dados da consulta', data);
                 setListaDemensagens(data);
-            })
+            });
+
+        escutaMsgTempoReal((novaMensagem) => {
+            setListaDemensagens((valorAtualDaLista) => {
+                return [
+                    novaMensagem,
+                    ...valorAtualDaLista,
+                ]
+            });
+        });
+
     }, []);
 
     // ./Sua lógica vai aqui
@@ -42,7 +54,7 @@ export default function ChatPage() {
         const mensagem = {
 
             //  id: listadeMensagens.length + 1,
-            de: 'Fer-Souza29',
+            de: usuarioLogado,
             texto: novaMensagem,
         }
         supabaseClient
@@ -52,10 +64,7 @@ export default function ChatPage() {
                 mensagem
             ])
             .then(({ data }) => {
-                setListaDemensagens([
-                    data[0],
-                    ...listadeMensagens,
-                ]);
+                console.log(data)
             });
         setMensagem('');
     }
@@ -144,6 +153,12 @@ export default function ChatPage() {
                                 backgroundColor: appConfig.theme.colors.neutrals[800],
                                 marginRight: '12px',
                                 color: appConfig.theme.colors.neutrals[200],
+                            }}
+                        />
+                        <ButtonSendSticker
+                            onStickerClick={(sticker) => {
+                                console.log('Salva esse sticker no banco', sticker);
+                                handleNovaMensagem(':sticker: ' + sticker);
                             }}
                         />
 
@@ -277,7 +292,18 @@ function MessageList(props) {
                                 }}
                             />
                         </Box>
-                        {mensagem.texto}
+
+                        {/* declarativo  esse codigo verifica se a mensagem é um sticker*/}
+
+                        {mensagem.texto.startsWith(':sticker:')
+                            ? (
+                                <Image src={mensagem.texto.replace(':sticker:', '')} />
+                            )
+                            : (
+                                mensagem.texto
+                            )}
+
+
                     </Text>
                 )
             })}
