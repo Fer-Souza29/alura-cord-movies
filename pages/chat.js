@@ -137,7 +137,7 @@ export default function ChatPage() {
                             type="textarea"
                             styleSheet={{
 
-                                width: '85%',
+                                width: '90%',
                                 border: '0',
                                 resize: 'none',
                                 borderRadius: '5px',
