@@ -3,8 +3,6 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
-
-
 function Titulo(props) {
     console.log(props);
     const Tag = props.tag || 'h1';
@@ -31,23 +29,12 @@ export default function PaginaInicial() {
     const [username, setUsername] = React.useState('Fer-Souza29'); // hook para alterar estado da pagina
     const roteamento = useRouter(); // hooks de push para mudar de URL
 
-    // desafio não mostrar imagem com usr com menos de 2 caracteres
+    // desafio extra não mostrar imagem com usr com menos de 2 caracteres
     let userimg = `https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png`
-    // if de gambiarra, mas, desafio concluido
+    // if de gambiarra, mas, desafio concluido.
     if (username.length >= 3) {
         userimg = `https://github.com/${username}.png`
     }
-
-    /* codigo de desafio api não finalizado
-    var url = 'https://api.github.com/users/Fer-Souza29'
-
-    fetch(url)
-        .then(resposta => resposta.json()).then((respostaConvertida) => {
-            let dados = respostaConvertida
-
-        })
-*/
-
 
     return (
         <>
@@ -101,9 +88,9 @@ export default function PaginaInicial() {
                             onChange={function (event) {
 
                                 console.log('usuario digitou', event.target.value);
-                                // onde tá o valor?
+
                                 const valor = event.target.value;
-                                // trocar o valor da variável
+                                // troca o valor da variável no TextField (embaixo da imagem)
                                 setUsername(valor);
                             }}
                             textFieldColors={{
@@ -129,8 +116,6 @@ export default function PaginaInicial() {
                             }}
                         />
                     </Box>
-                    {/* Formulário */}
-
 
                     {/* Photo Area */}
                     <Box
@@ -140,12 +125,6 @@ export default function PaginaInicial() {
                             alignItems: 'center',
                             maxWidth: '200px',
                             padding: '16px',
-                            /*
-                            backgroundColor: appConfig.theme.colors.neutrals[800],
-                            border: '1px solid',
-                            borderColor: appConfig.theme.colors.neutrals[999],
-                            borderRadius: '10px',
-                            */
                             flex: 1,
                             minHeight: '240px',
                         }}
@@ -158,19 +137,20 @@ export default function PaginaInicial() {
 
                             src={userimg}
                         />
+
+                        {/* Text area */}
+
                         <Text
                             variant="body4"
                             styleSheet={{
                                 color: appConfig.theme.colors.neutrals[200],
                                 backgroundColor: appConfig.theme.colors.neutrals[900],
-                                padding: '3px 10px',
-                                borderRadius: '1000px'
                             }}
                         >
                             {username}
                         </Text>
                     </Box>
-                    {/* Photo Area */}
+
                 </Box>
             </Box>
         </>

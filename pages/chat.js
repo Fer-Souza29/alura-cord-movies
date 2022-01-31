@@ -5,10 +5,10 @@ import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/router';
 import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 
-
+// Chave de acesso protegida com variavel de ambiente 
 const supabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-
+// essa função faz com o que o chat em tempo real funcione, ele atualiza sempre que é enviado uma nova msg pro banco.
 function escutaMsgTempoReal(adicionaMensagem) {
     return supabaseClient
         .from('mensagens')
@@ -19,7 +19,7 @@ function escutaMsgTempoReal(adicionaMensagem) {
 
 
 export default function ChatPage() {
-    // Sua lógica vai aqui
+
 
     const roteamento = useRouter();
     const usuarioLogado = roteamento.query.username;
@@ -27,7 +27,7 @@ export default function ChatPage() {
     const [listadeMensagens, setListaDemensagens] = React.useState([]);
 
 
-
+    // essa função recebe os dados do banco de dados, e atualiza na página.
     React.useEffect(() => {
         supabaseClient.from('mensagens')
             .select('*')
@@ -48,8 +48,8 @@ export default function ChatPage() {
 
     }, []);
 
-    // ./Sua lógica vai aqui
 
+    //essa função recebe os dados do campo, e envia uma nova mensagem pro bando de dados 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
 
@@ -60,7 +60,7 @@ export default function ChatPage() {
         supabaseClient
             .from('mensagens')
             .insert([
-                // tem que ser um obj com os mesmos campos
+                // tem que ser um obj com os mesmos campos do banco de dados
                 mensagem
             ])
             .then(({ data }) => {
@@ -69,17 +69,7 @@ export default function ChatPage() {
         setMensagem('');
     }
 
-    // Sua lógica vai aqui
 
-    // usr digitar no campo textarea
-    // aperta enter para enviar
-    // adc texto na listagem
-
-
-    // fazer desafio do botao deletar mensagens e estilo pos semana react.
-    // ./Sua lógica vai aqui
-    // usar on change, usar setstate ( ter if para caso seja enter para limpar a variavel)
-    // lista de mensagens é um state, campo de msg
     return (
         <Box
             styleSheet={{
@@ -97,7 +87,6 @@ export default function ChatPage() {
                     flex: 1,
                     boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
                     borderRadius: '5px',
-                    backgroundColor: appConfig.theme.colors.neutrals[700],
                     height: '100%',
                     maxWidth: '95%',
                     maxHeight: '95vh',
@@ -127,6 +116,9 @@ export default function ChatPage() {
                         styleSheet={{
                             display: 'flex',
                             alignItems: 'start',
+
+                            justifyContent: 'space-between',
+
                         }}
                     >
                         <TextField
@@ -145,13 +137,15 @@ export default function ChatPage() {
                             type="textarea"
                             styleSheet={{
 
-                                width: '100%',
+                                width: '85%',
                                 border: '0',
                                 resize: 'none',
                                 borderRadius: '5px',
                                 padding: '6px 8px',
                                 backgroundColor: appConfig.theme.colors.neutrals[800],
-                                marginRight: '12px',
+
+                                marginRight: '5px',
+
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
@@ -164,17 +158,19 @@ export default function ChatPage() {
 
                         <Button
                             type='submit'
-                            label='Enviar Mensagem'
+                            label='Enviar'
 
                             onClick={(event) => {
                                 event.preventDefault();
                                 handleNovaMensagem(mensagem);
                             }}
                             styleSheet={{
+                                width: '100px',
                                 height: '45.6px',
-
                                 padding: '0',
-                                margin: '0'
+
+                                marginLeft: '5px',
+
                             }
                             }
                             buttonColors={{
@@ -211,9 +207,6 @@ function Header() {
 }
 
 function MessageList(props) {
-
-
-
 
     return (
         <Box
@@ -293,7 +286,7 @@ function MessageList(props) {
                             />
                         </Box>
 
-                        {/* declarativo  esse codigo verifica se a mensagem é um sticker*/}
+                        {/* declarativo, esse codigo verifica se a mensagem é um sticker*/}
 
                         {mensagem.texto.startsWith(':sticker:')
                             ? (
