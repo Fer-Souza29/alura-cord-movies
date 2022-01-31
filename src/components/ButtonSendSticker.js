@@ -92,7 +92,7 @@ export function ButtonSendSticker(props) {
                   }
                 }}
               >
-                <Image src={sticker} />
+                      <Image src={sticker}/>
               </Text>
             ))}
           </Box>

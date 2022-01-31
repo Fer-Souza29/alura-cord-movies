@@ -107,7 +107,7 @@ export default function ChatPage() {
                     }}
                 >
 
-                    <MessageList mensagens={listadeMensagens} />
+                    <MessageList mensagens={listadeMensagens}/>
 
                     {/* <MessageList mensagens={[]} /> */}
 
@@ -212,7 +212,7 @@ function MessageList(props) {
         <Box
             tag="ul"
             styleSheet={{
-                overflow: 'hidden',
+                overflow: 'auto',
                 display: 'flex',
                 flexDirection: 'column-reverse',
                 flex: 1,
@@ -226,6 +226,7 @@ function MessageList(props) {
                         key={mensagem.id}
                         tag="li"
                         styleSheet={{
+                           
                             borderRadius: '5px',
                             padding: '6px',
                             marginBottom: '12px',
@@ -290,7 +291,12 @@ function MessageList(props) {
 
                         {mensagem.texto.startsWith(':sticker:')
                             ? (
-                                <Image src={mensagem.texto.replace(':sticker:', '')} />
+                                <Image src={mensagem.texto.replace(':sticker:', '')} styleSheet={
+                                    {
+                                        width:'200px',
+                                        maxWidth:'200px'
+                                    }
+                                }/>
                             )
                             : (
                                 mensagem.texto
